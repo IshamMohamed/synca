@@ -1,5 +1,5 @@
 # synca
-Asynchronous API action generator for C# API projects. Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
+Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
 
 ## Internals
 The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a run0time generateed GUID to identify the job, store it in the in-process memory cache, implementing `IMemoryCache` and send the reply. The below is the sequence of operations:
