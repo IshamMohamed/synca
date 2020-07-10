@@ -8,7 +8,7 @@ Asynchronous API action generator for C# API projects. Using [C# Source Generato
 - `services.AddSynca();` added at the `ConfigureServices()`.
 ### Controller class
 - Should end with "Controller" suffix.
-- Should be derived from `ControllerBase`.
+- Should have been derived from `ControllerBase`.
 - Should have `private readonly IMemoryCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
 ### Action
 - Should have the return type as `async Task<IActionResult>`.
