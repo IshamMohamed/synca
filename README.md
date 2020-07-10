@@ -2,6 +2,8 @@
 Asynchronous API action generator for C# API projects. Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions.
 
 ## Prerequisite for code generation
+### .NET 5
+- C# Source Generators support .NET 5.
 ### API Project
 - Should have project reference to `synca.lib.csproj` project and `synca.gen.csproj` with `OutputItemType="Analyzer" ReferenceOutputAssembly="false"`.
 - Should have `<LangVersion>preview</LangVersion>` in the .csproj file.
