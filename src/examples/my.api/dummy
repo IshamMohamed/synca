@@ -1,0 +1,123 @@
+
+using System;
+using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace my.api.Controllers
+{
+    public partial class WeatherForecastController : ControllerBase
+    {
+
+        string method = @"
+                    
+            using System;
+            using System.Net;
+            using System.Reflection;
+            using System.Threading.Tasks;
+            using Microsoft.AspNetCore.Mvc;
+            using Microsoft.Extensions.Caching.Memory;
+
+            namespace my.api.Controllers
+            {
+                public partial class WeatherForecastController : ControllerBase
+                {
+                    [HttpGet]
+                    [Route(""Async{action}/{id?}"")]
+                    public IActionResult AsyncMethod(string action, string id)
+                    {{
+                        if(!string.IsNullOrEmpty(id))
+                        {{
+                            (int,string) cachedValue = (int.MinValue, string.Empty);
+                            if(_cache.TryGetValue(id, out cachedValue))
+                            {{
+                                switch (cachedValue.Item1)
+                                {{
+                                    case ((int)HttpStatusCode.Accepted):
+                                        return Accepted(cachedValue.Item2);
+                                    case ((int)HttpStatusCode.OK):
+                                        return Ok(cachedValue.Item2);
+                                    case ((int)HttpStatusCode.BadRequest):
+                                        return BadRequest(cachedValue.Item2);
+                                    case ((int)HttpStatusCode.Unauthorized):
+                                        return Unauthorized(cachedValue.Item2);
+                                    case ((int)HttpStatusCode.Forbidden):
+                                        return Forbid(cachedValue.Item2);
+                                    case ((int)HttpStatusCode.NotFound):
+                                        return NotFound(cachedValue.Item2);
+                                    default:
+                                        return BadRequest(cachedValue.Item2);
+                                }}
+                            }}
+                            else
+                            {{
+                                return BadRequest(""Unable to find request!"");
+                            }}
+
+                        }
+                        else
+                        {{
+                            string taskId = Guid.NewGuid().ToString();
+                            string cacheValue = $""{Request.Path.Value}/{taskId}"";
+
+                            MethodInfo theMethod = this.GetType().GetMethod(action);
+                            _queue.QueueBackgroundWorkItem(token => {return(taskId, (Task<IActionResult>)theMethod.Invoke(this,null));});
+                            
+                            _cache.Set(taskId, ((int)HttpStatusCode.Accepted, cacheValue));
+                            return Accepted(cacheValue);
+                        }}
+                    }}
+                }}
+            }}
+        ";
+
+
+        [HttpGet]
+        [Route("Async{action}/{id?}")]
+        public IActionResult AsyncMethod(string action, string id)
+        {
+            if(!string.IsNullOrEmpty(id))
+            {
+                (int,string) cachedValue = (int.MinValue, string.Empty);
+                if(_cache.TryGetValue(id, out cachedValue))
+                {
+                    switch (cachedValue.Item1)
+                    {
+                        case ((int)HttpStatusCode.Accepted):
+                            return Accepted(cachedValue.Item2);
+                        case ((int)HttpStatusCode.OK):
+                            return Ok(cachedValue.Item2);
+                        case ((int)HttpStatusCode.BadRequest):
+                            return BadRequest(cachedValue.Item2);
+                        case ((int)HttpStatusCode.Unauthorized):
+                            return Unauthorized(cachedValue.Item2);
+                        case ((int)HttpStatusCode.Forbidden):
+                            return Forbid(cachedValue.Item2);
+                        case ((int)HttpStatusCode.NotFound):
+                            return NotFound(cachedValue.Item2);
+                        default:
+                            return BadRequest(cachedValue.Item2);
+                    }
+                }
+                else
+                {
+                    return BadRequest("Unable to find request!");
+                }
+
+            }
+            else
+            {
+                string taskId = Guid.NewGuid().ToString();
+                string cacheValue = $"{Request.Path.Value}/{taskId}";
+
+                MethodInfo theMethod = this.GetType().GetMethod(action);
+                _queue.QueueBackgroundWorkItem(token => {return(taskId, (Task<IActionResult>)theMethod.Invoke(this,null));});
+                
+                _cache.Set(taskId, ((int)HttpStatusCode.Accepted, cacheValue));
+                return Accepted(cacheValue);
+            }
+        }
+    }
+}
