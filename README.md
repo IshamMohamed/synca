@@ -11,7 +11,7 @@ The generated action that follows async request-reply pattern uses `ConcurrentQu
 
 The actual response will be kept in the memory cache for one day since first accessed. 
 
-## Prerequisite for code generation
+## Prerequisites for code generation
 ### .NET 5 Preview
 - C# Source Generators support .NET 5.
 ### API Project
