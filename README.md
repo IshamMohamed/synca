@@ -2,7 +2,7 @@
 Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable in-process, non-distributed [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
 
 ## Internals
-The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a run0time generateed GUID to identify the job, store it in the in-process memory cache, implementing `IMemoryCache` and send the reply. The below is the sequence of operations:
+The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, implementing `IMemoryCache` and send the reply. The below is the sequence of operations:
 1) Queue the long running job along with the identifying GUID.
 2) Reply the identifying GUID in the location header to user through `Accepted` HTTP response.
 3) In-process background job, `QueuedHostedService` dequeues the job and executing it.
@@ -13,7 +13,7 @@ The actual response will be kept in the memory cache for one day since first acc
 
 ## Prerequisites for code generation
 ### .NET 5 Preview
-- C# Source Generators support .NET 5.
+- C# Source Generators are only supported in .NET 5.
 ### API Project
 - Should have project reference to `synca.lib.csproj` project and `synca.gen.csproj` with `OutputItemType="Analyzer" ReferenceOutputAssembly="false"`.
 - Should have `<LangVersion>preview</LangVersion>` in the .csproj file.
