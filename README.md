@@ -19,6 +19,7 @@ The actual response will be kept in the memory cache for one day since first acc
 - Should have `<LangVersion>preview</LangVersion>` in the .csproj file.
 - `services.AddSynca();` added at the `ConfigureServices()`.
 ### Controller class
+- Is a `partial` class
 - Should end with "Controller" suffix.
 - Should have been derived from `ControllerBase`.
 - Should have `private readonly IMemoryCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
