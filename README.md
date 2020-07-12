@@ -1,4 +1,4 @@
-# synca
+# synca 🦁
 Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable in-process, non-distributed [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
 
 ## Internals
