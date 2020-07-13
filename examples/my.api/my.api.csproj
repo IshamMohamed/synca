@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\synca.lib\synca.lib.csproj" />
-    <ProjectReference Include="..\..\synca.gen\synca.gen.csproj" 
+    <ProjectReference Include="..\..\src\synca.lib\synca.lib.csproj" />
+    <ProjectReference Include="..\..\src\synca.gen\synca.gen.csproj" 
                     OutputItemType="Analyzer"
                     ReferenceOutputAssembly="false" />
   </ItemGroup>
