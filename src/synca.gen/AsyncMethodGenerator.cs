@@ -136,7 +136,7 @@ public class AsyncMethodGenerator : ISourceGenerator
         stringBuilder.Append($@"
             {{
                 string taskId = Guid.NewGuid().ToString();
-                string cacheValue = $@""/GetResult{method.Identifier}/{{taskId}}"";
+                string cacheValue = $@""[host]/{{{{controller_route}}}}/GetResult{method.Identifier}/{{taskId}}"";
 
                 _queue.QueueBackgroundWorkItem(token => {{return(taskId, {GenerateCallingMethod(method)});}});
                 
