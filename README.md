@@ -6,7 +6,7 @@ The generated action that follows async request-reply pattern uses `ConcurrentQu
 1) Queue the long running job along with the identifying GUID.
 2) Reply the identifying GUID in the location header to user through `Accepted` HTTP response.
 3) In-process background job, `QueuedHostedService` dequeues the job and executing it.
-4) If there is any `GET` request comes to check the result of the job while it is still processing - the same reply sent in (2) will be served.
+4) If there is any `GET` request comes to check the result of the job while it is still processing, the same reply sent in (2) will be served.
 5) If there is any `GET` request comes to check the result after job completes - the actual response will be served.
 
 The actual response will be kept in the memory cache for one day since first accessed. 
