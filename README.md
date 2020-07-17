@@ -2,7 +2,7 @@
 Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable in-process, non-distributed [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
 
 ## Internals
-The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, implementing `IMemoryCache` and send the reply. The below is the sequence of operations:
+The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, currently implementing non-distributed `IMemoryCache` and send the reply, but the plan to support distributed caching in near future. The below is the sequence of operations:
 1) Queue the long running job along with the identifying GUID.
 2) Reply the identifying GUID in the location header to user through `Accepted` HTTP response.
 3) In-process background job, `QueuedHostedService` dequeues the job and executing it.
@@ -20,12 +20,12 @@ The actual response will be kept in the memory cache for one day since first acc
 - `services.AddSynca();` added at the `ConfigureServices()`.
 ### Controller class
 - Is a `partial` class
-- Should end with "Controller" suffix.
-- Should have been derived from `ControllerBase`.
-- Should have `private readonly IMemoryCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
+- Is ending with "Controller" suffix.
+- Is derived from `ControllerBase`.
+- Has `private readonly IMemoryCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
 ### Action
-- Should have the return type as `async Task<IActionResult>`.
-- Should have `[Route]` attribute defined.
+- Has the return type as `async Task<IActionResult>`.
+- Has `[Route]` attribute defined.
 
 ## Usage
 For all actions having `[Route]` attribute under any controllers ending with `Controller`, derived from `ControllerBase`, an async method shall be generated. 
