@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -240,7 +241,8 @@ public class AsyncMethodGenerator : ISourceGenerator
         {
             // Business logic to decide what we're interested in goes here
             if (syntaxNode is ClassDeclarationSyntax cds &&
-                cds.Identifier.ValueText.EndsWith("Controller"))
+                cds.Identifier.ValueText.EndsWith("Controller") &&
+                cds.Modifiers.Any(SyntaxKind.PartialKeyword))
             {
                 //ClassToAugment = cds;
                 CandidateClasses.Add(cds);
