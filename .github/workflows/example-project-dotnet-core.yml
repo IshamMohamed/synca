@@ -1,4 +1,4 @@
-name: Example Project Build
+name: synca example project
 
 on:
   push:
