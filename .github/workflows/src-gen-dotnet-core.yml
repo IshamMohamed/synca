@@ -21,5 +21,3 @@ jobs:
       run: dotnet restore src/synca.gen/synca.gen.csproj
     - name: Build
       run: dotnet build src/synca.gen/synca.gen.csproj --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
