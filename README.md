@@ -1,9 +1,9 @@
 # synca 🦁
 Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/), this framework shall generate actions in the API project to enable in-process, non-distributed [asynchronous request-reply pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/async-request-reply) for actions. 
 
-![synca src.lib](https://github.com/IshamMohamed/synca/workflows/synca%20src.lib/badge.svg)
+![synca.lib](https://github.com/IshamMohamed/synca/workflows/synca.lib/badge.svg)
 
-![synca src.gen](https://github.com/IshamMohamed/synca/workflows/synca%20src.gen/badge.svg)
+![synca.gen](https://github.com/IshamMohamed/synca/workflows/synca.gen/badge.svg)
 
 ## Internals
 The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, currently implementing non-distributed `IMemoryCache` and send the reply, but the plan to support distributed caching in near future. The below is the sequence of operations:
