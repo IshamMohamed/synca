@@ -1,4 +1,4 @@
-name: .NET Core
+name: Example Project Build
 
 on:
   push:
