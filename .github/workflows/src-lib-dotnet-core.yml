@@ -21,3 +21,4 @@ jobs:
       run: dotnet restore src/synca.lib/synca.lib.csproj
     - name: Build
       run: dotnet build src/synca.lib/synca.lib.csproj --configuration Release --no-restore
+    # add test later
