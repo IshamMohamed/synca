@@ -1,0 +1,25 @@
+name: synca src.lib
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100-preview.6.20318.15
+    - name: Install dependencies
+      run: dotnet restore src/synca.lib/synca.lib.csproj
+    - name: Build
+      run: dotnet build src/synca.lib/synca.lib.csproj --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
