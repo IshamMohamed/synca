@@ -1,4 +1,4 @@
-name: synca src.gen
+name: synca.gen
 
 on:
   push:
