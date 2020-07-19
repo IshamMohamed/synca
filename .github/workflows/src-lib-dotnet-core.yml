@@ -1,4 +1,4 @@
-name: synca src.lib
+name: synca.lib
 
 on:
   push:
