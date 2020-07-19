@@ -21,3 +21,6 @@ jobs:
       run: dotnet restore src/synca.gen/synca.gen.csproj
     - name: Build
       run: dotnet build src/synca.gen/synca.gen.csproj --configuration Release --no-restore
+  # TODO: 
+  # - name: Test
+  #   run: dotnet test src/synca.gen.test/synca.gen.test.csproj
