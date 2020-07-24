@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 using synca.lib.Background;
 using synca.lib.Hosted.Service;
@@ -35,6 +36,14 @@ namespace synca.lib.Services
         public static IServiceCollection AddSyncaDistributed(this IServiceCollection services, Action<MemoryCacheOptions> setupAction)
         {
             services.AddDistributedMemoryCache(setupAction);
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.AddHostedService<QueuedHostedService>();
+            return services;
+        }
+
+        public static IServiceCollection AddSyncaDistributedSql(this IServiceCollection services, Action<SqlServerCacheOptions> setupAction)
+        {
+            services.AddDistributedSqlServerCache(setupAction);
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
             services.AddHostedService<QueuedHostedService>();
             return services;
