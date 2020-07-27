@@ -6,7 +6,7 @@ Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c
 ![synca.gen](https://github.com/IshamMohamed/synca/workflows/synca.gen/badge.svg)
 
 ## Internals
-The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, currently implementing `IMemoryCache` (`AddMemoryCache`, `AddDistributedMemoryCache` and `AddSyncaDistributedSql` are supported. Refer (Service Collections)[] section below) and send the reply, but the plan to support more distributed caching mechanisms in near future. The below is the sequence of operations:
+The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in the in-process memory cache, currently implementing `IMemoryCache` (`AddMemoryCache`, `AddDistributedMemoryCache` and `AddSyncaDistributedSql` are supported. Refer (Service Collections)[https://github.com/IshamMohamed/synca/blob/master/README.md#service-collections] section below) and send the reply, but the plan to support more distributed caching mechanisms in near future. The below is the sequence of operations:
 1) Queue the long running job along with the identifying GUID.
 2) Reply the identifying GUID in the location header to user through `Accepted` HTTP response.
 3) In-process background job, `QueuedHostedService` dequeues the job and executing it.
