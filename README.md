@@ -18,11 +18,10 @@ Below is the sequence of operations:
 The actual response will be kept in the memory cache for one day since first accessed. 
 
 ## Prerequisites for code generation
-### .NET 5 Preview
-- C# Source Generators are only supported in .NET 5. So make sure you've installed .NET 5 (preview) SDK to build the project.
+### .NET 5
+- C# Source Generators are only supported in .NET 5. So make sure you've installed .NET 5 SDK to build the project.
 ### API Project
 - Should have project reference to `synca.lib.csproj` project and `synca.gen.csproj` with `OutputItemType="Analyzer" ReferenceOutputAssembly="false"`.
-- Should have `<LangVersion>preview</LangVersion>` in the .csproj file.
 - `services.AddSynca();` added at the `ConfigureServices()`.
 ### Controller class
 - Is a `partial` class
