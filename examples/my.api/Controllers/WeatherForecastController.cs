@@ -32,7 +32,7 @@ namespace my.api.Controllers
         public async Task<IActionResult> MyMethod()
         {
             // No async action generated for this method
-            System.Threading.Thread.Sleep(5000);
+            await Task.Delay(20000);
             return Ok("Good");
         }
 
@@ -46,9 +46,9 @@ namespace my.api.Controllers
         /// </summary>
         [HttpGet]
         [Route("MyMethod/{id}")]
-        public async Task<IActionResult> DCheckAsyncMyMethod(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            System.Threading.Thread.Sleep(5000);
+            await Task.Delay(20000);
             return Ok(id);
         }
 
@@ -64,7 +64,7 @@ namespace my.api.Controllers
         [Route("MyMethod/{id}")]
         public async Task<IActionResult> Post(int id)
         {
-            System.Threading.Thread.Sleep(5000);
+            await Task.Delay(20000);
             return Ok(id);
         }
     }
@@ -96,7 +96,7 @@ namespace my.api.Controllers
         [Route("Get")]
         public async Task<IActionResult> GetSome()
         {
-            System.Threading.Thread.Sleep(20000);
+            await Task.Delay(20000);
 
             var rng = new Random();
             return Ok(Enumerable.Range(1, 5).Select(index => new WeatherForecast

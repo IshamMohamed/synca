@@ -9,13 +9,13 @@ using Microsoft.CodeAnalysis.Text;
 [Generator]
 public class AsyncMethodGenerator : ISourceGenerator
 {
-    public void Initialize(InitializationContext context)
+    public void Initialize(GeneratorInitializationContext context)
     {
         // Register a factory that can create our custom syntax receiver
         context.RegisterForSyntaxNotifications(() => new MySyntaxReceiver());
     }
 
-    public void Execute(SourceGeneratorContext context)
+    public void Execute(GeneratorExecutionContext context)
     {
         // the generator infrastructure will create a receiver and populate it
         // we can retrieve the populated instance via the context
@@ -107,7 +107,7 @@ public class AsyncMethodGenerator : ISourceGenerator
     private string GenerateAsyncAcceptorMethod(MethodDeclarationSyntax method)
     {
         StringBuilder stringBuilder = new StringBuilder();
-
+        
         // Generate method attributes
         // If Route is defined, this will prefix it with "async/". Eg:
         // [Route("Async<existing_route_artuments>")]
@@ -127,7 +127,8 @@ public class AsyncMethodGenerator : ISourceGenerator
             }
         }
         stringBuilder.Append("\r\n");
-
+        stringBuilder.Append("#pragma warning disable 1998");
+        stringBuilder.Append("\r\n");
         // Create the method signature with method name renamed to "Async{methodName}"
         stringBuilder.Append($"{method.Modifiers} {method.ReturnType} Async{method.Identifier} ");
         stringBuilder.Append($"({method.ParameterList.Parameters})");
@@ -153,6 +154,8 @@ public class AsyncMethodGenerator : ISourceGenerator
     private string GenerateResultsCheckMethod(MethodDeclarationSyntax method)
     {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append("#pragma warning disable 1998");
+        stringBuilder.Append("\r\n");
         stringBuilder.Append("[HttpGet]");
         stringBuilder.Append("\r\n");
         stringBuilder.Append($@"[Route(""GetResult{method.Identifier}/{{id?}}"")]");
