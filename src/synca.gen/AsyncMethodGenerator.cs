@@ -44,6 +44,7 @@ public class AsyncMethodGenerator : ISourceGenerator
                 using System.Threading.Tasks;
                 using Microsoft.AspNetCore.Mvc;
                 using Microsoft.Extensions.Caching.Memory;
+                using Microsoft.Extensions.Caching.Distributed;
                 
                 // reference to synca.lib
                 using synca.lib.Hosted.Service;
@@ -138,12 +139,13 @@ public class AsyncMethodGenerator : ISourceGenerator
         stringBuilder.Append($@"
             {{
                 string taskId = Guid.NewGuid().ToString();
-                string cacheValue = $@""[host]/{{{{controller_route}}}}/GetResult{method.Identifier}/{{taskId}}"";
+                string responseValue = $@""[host]/{{{{controller_route}}}}/GetResult{method.Identifier}/{{taskId}}"";
 
                 _queue.QueueBackgroundWorkItem(token => {{return(taskId, {GenerateCallingMethod(method)});}});
-                
-                _cache.Set(taskId, ((int)HttpStatusCode.Accepted, cacheValue));
-                return Accepted(cacheValue);
+                string cacheValue = $""{{((int)HttpStatusCode.Accepted).ToString()}}{{Convert.ToChar(31)}}{{responseValue}}"";
+                //_cache.Set(taskId, cacheValue);
+                _cache.SetString(taskId, cacheValue);
+                return Accepted(responseValue);
             }}
         ");
 
@@ -166,25 +168,30 @@ public class AsyncMethodGenerator : ISourceGenerator
         {{
             if(!string.IsNullOrEmpty(id))
             {{
-                (int,string) cachedValue = (int.MinValue, string.Empty);
-                if(_cache.TryGetValue(id, out cachedValue))
+                string cachedValue = string.Empty;
+                
+                //if(_cache.TryGetValue(id, out cachedValue))
+                cachedValue = _cache.GetString(id);
+                if(!string.IsNullOrEmpty(cachedValue))
                 {{
-                    switch (cachedValue.Item1)
+                    string statusCodeString = cachedValue.Split(Convert.ToChar(31))[0];
+                    string serializedResonse = cachedValue.Split(Convert.ToChar(31))[1];
+                    switch (int.Parse(statusCodeString))
                     {{
                         case ((int)HttpStatusCode.Accepted):
-                            return Accepted(cachedValue.Item2);
+                            return Accepted(serializedResonse);
                         case ((int)HttpStatusCode.OK):
-                            return Ok(cachedValue.Item2);
+                            return Ok(serializedResonse);
                         case ((int)HttpStatusCode.BadRequest):
-                            return BadRequest(cachedValue.Item2);
+                            return BadRequest(serializedResonse);
                         case ((int)HttpStatusCode.Unauthorized):
-                            return Unauthorized(cachedValue.Item2);
+                            return Unauthorized(serializedResonse);
                         case ((int)HttpStatusCode.Forbidden):
-                            return Forbid(cachedValue.Item2);
+                            return Forbid(serializedResonse);
                         case ((int)HttpStatusCode.NotFound):
-                            return NotFound(cachedValue.Item2);
+                            return NotFound(serializedResonse);
                         default:
-                            return BadRequest(cachedValue.Item2);
+                            return BadRequest(serializedResonse);
                     }}
                 }}
                 else

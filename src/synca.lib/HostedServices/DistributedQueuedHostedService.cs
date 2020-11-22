@@ -8,21 +8,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace synca.lib.Hosted.Service
 {
-    public sealed class QueuedHostedService : BackgroundService
+    public sealed class DistributedQueuedHostedService : BackgroundService
     {
         private readonly ILogger _logger;
-        private readonly IMemoryCache _cache;
+        private readonly IDistributedCache _cache;
 
-        public QueuedHostedService(IBackgroundTaskQueue taskQueue,
+        public DistributedQueuedHostedService(IBackgroundTaskQueue taskQueue,
             ILoggerFactory loggerFactory,
-            IMemoryCache memoryCache)
+            IDistributedCache cache)
         {
             TaskQueue = taskQueue;
-            _logger = loggerFactory.CreateLogger<QueuedHostedService>();
-            _cache = memoryCache;
+            _logger = loggerFactory.CreateLogger<DistributedQueuedHostedService>();
+            _cache = cache;
         } 
 
         public IBackgroundTaskQueue TaskQueue { get; }
@@ -37,15 +40,20 @@ namespace synca.lib.Hosted.Service
                 var workItem = await TaskQueue.DequeueAsync(cancellationToken);
 
                 var cacheKey = workItem(cancellationToken).Item1;   
-                (int,string) cacheValue = (int.MinValue, string.Empty);              
+
+                // cacheValue comes in the following format
+                // {statusCodeString}ascii(31){serializedResonse}
+                // eg: 200ascii(31){["one","two","three]}
+                // why ascii(31) - It is Unit Separator control character
+                string cacheValue = string.Empty;              
 
                 switch (await workItem(cancellationToken).Item2)
                 {
                     case ObjectResult o:
-                        cacheValue = ((int)o.StatusCode, JsonConvert.SerializeObject(o.Value));
+                        cacheValue = $"{((int)o.StatusCode).ToString()}{Convert.ToChar(31)}{JsonConvert.SerializeObject(o.Value)}";
                         break;
                     case StatusCodeResult s:
-                        cacheValue = ((int)s.StatusCode, string.Empty);
+                        cacheValue = $"{((int)s.StatusCode).ToString()}{Convert.ToChar(31)}{string.Empty}";
                         break;
                     default:
                         break;
@@ -53,16 +61,20 @@ namespace synca.lib.Hosted.Service
 
                 try
                 {
-                    (int,string) alreadyCachedValue;
-                    if(_cache.TryGetValue(cacheKey, out alreadyCachedValue))
+                    // alreadyCachedValue comes in the following format
+                    // {statusCodeString}^{serializedResonse}
+                    // eg: 200^{["one","two","three]}
+                    string alreadyCachedValue = _cache.GetString(cacheKey);
+                    if(!string.IsNullOrEmpty(alreadyCachedValue))
                     {
-                        if(alreadyCachedValue.Item1 == (int)HttpStatusCode.Accepted)
+                        string statusCodeString = alreadyCachedValue.Split(Convert.ToChar(31))[0];
+                        string serializedResonse = alreadyCachedValue.Split(Convert.ToChar(31))[1];
+                        if(int.Parse(statusCodeString) == (int)HttpStatusCode.Accepted)
                         {
                             _cache.Remove(cacheKey);
-
-                            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                            var cacheEntryOptions = new DistributedCacheEntryOptions()
                                 .SetSlidingExpiration(TimeSpan.FromDays(1));
-                            _cache.Set(cacheKey, cacheValue, cacheEntryOptions);
+                            _cache.SetString(cacheKey, cacheValue, cacheEntryOptions);
                         }
                     }
                 }

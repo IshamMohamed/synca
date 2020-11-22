@@ -20,7 +20,7 @@ namespace my.api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSynca();
+            services.AddSyncaDistributed();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
