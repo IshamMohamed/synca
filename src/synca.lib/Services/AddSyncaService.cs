@@ -9,19 +9,21 @@ namespace synca.lib.Services
 {
     public static class IServiceCollectionExtension
     {
+        [Obsolete("This will be entirely depricated in very near future")]
         public static IServiceCollection AddSynca(this IServiceCollection services)
         {
             services.AddMemoryCache();
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-            services.AddHostedService<QueuedHostedService>();
+            services.AddHostedService<InMemoryQueuedHostedService>();
             return services;
         }
 
+        [Obsolete("This will be entirely depricated in very near future")]
         public static IServiceCollection AddSynca(this IServiceCollection services, Action<MemoryCacheOptions> setupAction)
         {
             services.AddMemoryCache(setupAction);
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-            services.AddHostedService<QueuedHostedService>();
+            services.AddHostedService<InMemoryQueuedHostedService>();
             return services;
         }
 
@@ -29,7 +31,7 @@ namespace synca.lib.Services
         {
             services.AddDistributedMemoryCache();
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-            services.AddHostedService<QueuedHostedService>();
+            services.AddHostedService<DistributedQueuedHostedService>();
             return services;
         }
 
@@ -37,7 +39,7 @@ namespace synca.lib.Services
         {
             services.AddDistributedMemoryCache(setupAction);
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-            services.AddHostedService<QueuedHostedService>();
+            services.AddHostedService<DistributedQueuedHostedService>();
             return services;
         }
 
@@ -45,7 +47,7 @@ namespace synca.lib.Services
         {
             services.AddDistributedSqlServerCache(setupAction);
             services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-            services.AddHostedService<QueuedHostedService>();
+            services.AddHostedService<DistributedQueuedHostedService>();
             return services;
         }
     }

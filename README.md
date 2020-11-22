@@ -6,7 +6,7 @@ Using [C# Source Generators](https://devblogs.microsoft.com/dotnet/introducing-c
 ![synca.gen](https://github.com/IshamMohamed/synca/workflows/synca.gen/badge.svg)
 
 ## Internals
-The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in a cache, currently implementing `IMemoryCache` (`AddMemoryCache`, `AddDistributedMemoryCache` and `AddSyncaDistributedSql` are supported. Refer [Service Collections](https://github.com/IshamMohamed/synca/blob/master/README.md#service-collections) section below) and send the reply. More distributed caching machanisms are palnned to be supported in future. 
+The generated action that follows async request-reply pattern uses `ConcurrentQueue<Func<CancellationToken, (string, Task<IActionResult>)>>` to get the actual long running action to a queue along with a runtime generated GUID to identify the job, store it in a cache, currently implementing `IDistributedCache` (`AddDistributedMemoryCache` and `AddSyncaDistributedSql` are supported. Refer [Service Collections](https://github.com/IshamMohamed/synca/blob/master/README.md#service-collections) section below) and send the reply. More distributed caching machanisms are palnned to be supported in future. Support for `IMemoryCache` is now obsolete and will be depricated since it doesn't really add any values in production scenarios. 
 
 Below is the sequence of operations:
 1) Queue the long running job along with the identifying GUID.
@@ -27,7 +27,7 @@ The actual response will be kept in the memory cache for one day since first acc
 - Is a `partial` class
 - Is ending with "Controller" suffix.
 - Is derived from `ControllerBase`.
-- Has `private readonly IMemoryCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
+- Has `private readonly IDistributedCache` and `private readonly IBackgroundTaskQueue` fields from `synca.lib.Background` declared and instentiated in the class constructor.
 ### Action
 - Has the return type as `async Task<IActionResult>`.
 - Has `[Route]` attribute defined.
@@ -40,6 +40,5 @@ The generated async action shall be called with the respective HTTP verb used in
 An additional action is generated to view the response of the original action exection. This shall be accessed at `[host]/[controller_route]/GetResult{original_action_method_name}/{GUID}` as a `GET` call. In the above mentioned example, if the original action method name is `MyActionMethod` and the generated GUID is, 670bf3d2-32ae-4464-bf8f-876790701cf3: the location to check the response is `[host]/api/my_controller/getresultmyactionmethod/670bf3d2-32ae-4464-bf8f-876790701cf3`. 
 ### Service Collections
 synca 🦁 uses the following service collections:
-- `AddSynca` - Provides standard synca support in memory cache.
 - `AddSyncaDistributed` - Provides standard synca support in distributed memory cache.
 - `AddSyncaDistributedSql` - Provides standard synca support in distributed SQL Server cache. `SqlServerCacheOptions` must be provided.

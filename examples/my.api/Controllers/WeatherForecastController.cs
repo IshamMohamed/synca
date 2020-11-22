@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using synca.lib.Background;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace my.api.Controllers
 {
@@ -14,10 +15,12 @@ namespace my.api.Controllers
     {
         // Must add readonly fields with types IMemoryCache and IBackgroundTaskQueue 
         // from synca.lib.Background namespace and instentiate them in the constructor.
-        private readonly IMemoryCache _cache;
+        
+        //private readonly IMemoryCache _cache;
+        private readonly IDistributedCache _cache;
         private readonly IBackgroundTaskQueue _queue;
 
-        public MyController(IMemoryCache memoryCache,
+        public MyController(IDistributedCache memoryCache,
             IBackgroundTaskQueue queue)
         {
             _cache = memoryCache;
@@ -79,12 +82,12 @@ namespace my.api.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IMemoryCache _cache;
+        private readonly IDistributedCache _cache;
         private readonly IBackgroundTaskQueue _queue;
 
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
-            IMemoryCache memoryCache,
+            IDistributedCache memoryCache,
             IBackgroundTaskQueue queue)
         {
             _logger = logger;
