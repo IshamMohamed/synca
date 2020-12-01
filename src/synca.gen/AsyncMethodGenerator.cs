@@ -143,7 +143,6 @@ public class AsyncMethodGenerator : ISourceGenerator
 
                 _queue.QueueBackgroundWorkItem(token => {{return(taskId, {GenerateCallingMethod(method)});}});
                 string cacheValue = $""{{((int)HttpStatusCode.Accepted).ToString()}}{{Convert.ToChar(31)}}{{responseValue}}"";
-                //_cache.Set(taskId, cacheValue);
                 _cache.SetString(taskId, cacheValue);
                 return Accepted(responseValue);
             }}
@@ -170,7 +169,6 @@ public class AsyncMethodGenerator : ISourceGenerator
             {{
                 string cachedValue = string.Empty;
                 
-                //if(_cache.TryGetValue(id, out cachedValue))
                 cachedValue = _cache.GetString(id);
                 if(!string.IsNullOrEmpty(cachedValue))
                 {{
