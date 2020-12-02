@@ -3,12 +3,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\synca.lib\synca.lib.csproj" />
     <ProjectReference Include="..\..\src\synca.gen\synca.gen.csproj" 
-                    OutputItemType="Analyzer"
-                    ReferenceOutputAssembly="false" />
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <!--The below is added to emit and show the generated files in the mentioned path-->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
