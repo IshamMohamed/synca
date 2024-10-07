@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "synca.gen", "synca.gen\synca.gen.csproj", "{1F2686FE-FE3D-44FE-8D1A-A8728370F7F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "synca.lib", "synca.lib\synca.lib.csproj", "{480A40FF-438A-42B7-A379-0F2FABFB036E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F2686FE-FE3D-44FE-8D1A-A8728370F7F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F2686FE-FE3D-44FE-8D1A-A8728370F7F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F2686FE-FE3D-44FE-8D1A-A8728370F7F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F2686FE-FE3D-44FE-8D1A-A8728370F7F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{480A40FF-438A-42B7-A379-0F2FABFB036E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{480A40FF-438A-42B7-A379-0F2FABFB036E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{480A40FF-438A-42B7-A379-0F2FABFB036E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{480A40FF-438A-42B7-A379-0F2FABFB036E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD73DFA9-2FE6-4B6D-8FD0-B97C0232EDE5}
+	EndGlobalSection
+EndGlobal
